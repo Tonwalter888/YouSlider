@@ -450,11 +450,11 @@ static void setSliderColorIfNeeded(YTPlayerBarSegmentView *self, CGRect rect) {
 %hook YTPlayerBarScrubberDotDecorationViewV2
 
 - (void)setScrubberDot:(UIView *)scrubberDot {
+    %orig;
     if (IsEnabled(ScrubberImageColorKey)) {
         UIColor *scrubberColor = scrubberUIColor();
         if (scrubberColor) [self setValue:scrubberColor forKey:@"_defaultScrubberDotColor"];
     }
-    %orig;
 }
 
 %end
