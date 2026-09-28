@@ -449,12 +449,10 @@ static void setSliderColorIfNeeded(YTPlayerBarSegmentView *self, CGRect rect) {
 
 %hook YTPlayerBarScrubberDotDecorationViewV2
 
-- (void)setScrubberDot:(UIView *)scrubberDot {
-    %orig;
-    if (IsEnabled(ScrubberImageColorKey)) {
-        UIColor *scrubberColor = scrubberUIColor();
-        if (scrubberColor) [self setValue:scrubberColor forKey:@"_defaultScrubberDotColor"];
-    }
+- (UIColor *)scrubberDotColor {
+    UIColor *scrubberColor = scrubberUIColor();
+    if (IsEnabled(ScrubberImageColorKey) && scrubberColor) return scrubberColor;
+    return %orig;
 }
 
 %end
@@ -627,8 +625,18 @@ static ELMNodeController *getNodeControllerParent(ELMNodeController *nodeControl
     if (!IsEnabled(SliderColorKey)) return;
     UIColor *color = sliderUIColor();
     if (color == nil) return;
-    [containerNode setValue:color forKey:@"_stretchableBackgroundColor"];
-    self.backgroundColor = color;
+    for (UIView *sub in [self.subviews copy])
+        if (sub.tag == 0xE1C4) [sub removeFromSuperview];
+
+    UIView *circleView = [[UIView alloc] initWithFrame:self.bounds];
+    circleView.backgroundColor = color;
+    circleView.tag = 0xE1C4;
+    circleView.userInteractionEnabled = NO;
+    circleView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    circleView.layer.masksToBounds = YES;
+    circleView.layer.cornerRadius = MIN(self.bounds.size.width, self.bounds.size.height) / 2.0;
+    [self addSubview:circleView];
+    [self bringSubviewToFront:circleView];
 }
 
 %end
