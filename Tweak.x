@@ -430,9 +430,6 @@ static void setSliderColorIfNeeded(YTPlayerBarSegmentView *self, CGRect rect) {
 @interface YTPlayerBarScrubberDotDecorationViewV1 : YTPlayerBarScrubberDotDecorationView
 @end
 
-@interface YTPlayerBarScrubberDotDecorationViewV2 : YTPlayerBarScrubberDotDecorationView
-@end
-
 %hook YTPlayerBarScrubberDotDecorationViewV1
 
 - (UIView *)expectedScrubberDot {
